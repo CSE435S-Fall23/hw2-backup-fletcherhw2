@@ -1,3 +1,6 @@
+/**
+ * Student: Ben Fletcher 498067
+ */
 package hw1;
 
 import java.util.ArrayList;

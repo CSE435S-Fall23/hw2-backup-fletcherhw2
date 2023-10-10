@@ -8,6 +8,8 @@ import java.util.Iterator;
  * A class to perform various aggregations, by accepting one tuple at a time
  * @author Doug Shook
  *
+ *
+ * Student: Ben Fletcher 498067
  */
 public class Aggregator {
 

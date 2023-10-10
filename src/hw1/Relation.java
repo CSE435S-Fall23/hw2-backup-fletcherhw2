@@ -6,6 +6,8 @@ import java.util.ArrayList;
  * This class provides methods to perform relational algebra operations. It will be used
  * to implement SQL queries.
  * @author Doug Shook
+ * 
+ * Student: Ben Fletcher 498067
  *
  */
 public class Relation {
@@ -15,6 +17,10 @@ public class Relation {
 	
 	public Relation(ArrayList<Tuple> l, TupleDesc td) {
 		//your code here
+		tuples = l;
+		this.td = td;
+		
+		
 	}
 	
 	/**
@@ -26,7 +32,25 @@ public class Relation {
 	 */
 	public Relation select(int field, RelationalOperator op, Field operand) {
 		//your code here
-		return null;
+		
+		ArrayList<Tuple> selectArrayList = new ArrayList<Tuple>();
+		
+		//all all tuples that match the select condition
+		for(Tuple t: tuples) {
+			
+			if(t.getField(field).compare(op, operand)== true) {
+				selectArrayList.add(t);
+			}
+				
+		}
+		
+
+		//why do we use same td if only one field is part of this td now, not 2?
+		
+		
+		Relation newRelation = new Relation(selectArrayList,td);
+		
+		return newRelation;
 	}
 	
 	/**
@@ -37,7 +61,27 @@ public class Relation {
 	 */
 	public Relation rename(ArrayList<Integer> fields, ArrayList<String> names) {
 		//your code here
-		return null;
+		Type[] newTypes = new Type[td.numFields()];
+		String[] newNames = new String[td.numFields()];
+		
+		for(int i = 0; i<td.numFields();i++) {
+			
+			if(fields.contains(i)) {
+				newTypes[i] = td.getType(i);
+				newNames[i] = names.get(i);
+			}
+			else {
+				newTypes[i] = td.getType(i);
+				newNames[i] = td.getFieldName(i);
+			}
+			
+		}
+		
+		TupleDesc newTupleDesc = new TupleDesc(newTypes, newNames);
+		
+		Relation newRelation = new Relation(tuples, newTupleDesc);
+		
+		return newRelation;
 	}
 	
 	/**
@@ -47,9 +91,33 @@ public class Relation {
 	 */
 	public Relation project(ArrayList<Integer> fields) {
 		//your code here
-		return null;
+		
+		Type[] projectTypes = new Type[fields.size()];
+		String[] projectNames = new String[fields.size()];
+		
+		
+		//create new tuple desc for this project relation
+		for(int i = 0; i<fields.size();i++) {
+			projectTypes[i] = td.getType(fields.get(i));
+			projectNames[i] = td.getFieldName(fields.get(i));
+		}
+
+		TupleDesc projectTupleDesc = new TupleDesc(projectTypes, projectNames);
+		
+		//make sure all tuples in current relation are converted to only include necessary fields
+		ArrayList<Tuple> projectTuples = tuples;
+		
+		for(Tuple t: projectTuples) {
+			t.setDesc(projectTupleDesc);
+		}
+		
+		Relation newRelation = new Relation(projectTuples,projectTupleDesc);
+		
+		return newRelation;
+		
+		
+		
 	}
-	
 	/**
 	 * This method performs a join between this relation and a second relation.
 	 * The resulting relation will contain all of the columns from both of the given relations,
@@ -77,12 +145,12 @@ public class Relation {
 	
 	public TupleDesc getDesc() {
 		//your code here
-		return null;
+		return td;
 	}
 	
 	public ArrayList<Tuple> getTuples() {
 		//your code here
-		return null;
+		return tuples;
 	}
 	
 	/**
@@ -91,6 +159,15 @@ public class Relation {
 	 */
 	public String toString() {
 		//your code here
-		return null;
+		
+		//add tuple desc
+		String concat = td.toString() + " ";
+		
+		//add all tuples to end
+		for(Tuple t: tuples) {
+			concat += t.toString() + " ";
+		}
+		
+		return concat;
 	}
 }
