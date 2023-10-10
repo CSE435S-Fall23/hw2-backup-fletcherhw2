@@ -2,6 +2,7 @@ package hw1;
 
 import java.sql.Types;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class represents a tuple that will contain a single row's worth of information
@@ -9,19 +10,33 @@ import java.util.HashMap;
  * @author Sam Madden modified by Doug Shook
  *
  */
+/*
+ * Student 1 name: Ben Fletcher
+ * Date: 9/6/2023
+ */
 public class Tuple {
+	
+	private TupleDesc tupleSchema;
+	private HashMap<Integer, Field> tupleStorage;
+	private int tuplePID;
+	private int tupleSlotID;
 	
 	/**
 	 * Creates a new tuple with the given description
 	 * @param t the schema for this tuple
 	 */
+	
 	public Tuple(TupleDesc t) {
 		//your code here
+		tupleSchema = t;
+		//initialize hashmap with correct length
+		tupleStorage = new HashMap<Integer,Field>(t.numFields());
+		
 	}
 	
 	public TupleDesc getDesc() {
 		//your code here
-		return null;
+		return tupleSchema;
 	}
 	
 	/**
@@ -30,11 +45,12 @@ public class Tuple {
 	 */
 	public int getPid() {
 		//your code here
-		return 0;
+		return tuplePID;
 	}
 
 	public void setPid(int pid) {
 		//your code here
+		tuplePID = pid;
 	}
 
 	/**
@@ -43,15 +59,17 @@ public class Tuple {
 	 */
 	public int getId() {
 		//your code here
-		return 0;
+		return tupleSlotID;
 	}
 
 	public void setId(int id) {
 		//your code here
+		tupleSlotID = id;
 	}
 	
 	public void setDesc(TupleDesc td) {
 		//your code here;
+		tupleSchema = td;
 	}
 	
 	/**
@@ -61,11 +79,12 @@ public class Tuple {
 	 */
 	public void setField(int i, Field v) {
 		//your code here
+		tupleStorage.put(i, v);
 	}
 	
 	public Field getField(int i) {
 		//your code here
-		return null;
+		return tupleStorage.get(i);
 	}
 	
 	/**
@@ -75,7 +94,12 @@ public class Tuple {
 	 */
 	public String toString() {
 		//your code here
-		return "";
+		String concatString = "";
+		
+		for(int i = 0; i<tupleStorage.size();i++) {
+			concatString += tupleSchema.getFieldName(i) + ": " + tupleStorage.get(i) + ", ";
+		}
+		return concatString;
 	}
 }
 	

@@ -4,10 +4,17 @@ import java.util.*;
 /**
  * TupleDesc describes the schema of a tuple.
  */
+/*
+ * Student 1 name: Ben Fletcher
+ * Date: 9/6/2023
+ */
 public class TupleDesc {
 
 	private Type[] types;
 	private String[] fields;
+	//in bytes
+	private int sizeInt = 4;
+	private int sizeString = 129;
 	
     /**
      * Create a new TupleDesc with typeAr.length fields with fields of the
@@ -19,6 +26,9 @@ public class TupleDesc {
      */
     public TupleDesc(Type[] typeAr, String[] fieldAr) {
     	//your code here
+    	
+    	types = typeAr;
+    	fields = fieldAr;
     }
 
     /**
@@ -26,7 +36,7 @@ public class TupleDesc {
      */
     public int numFields() {
         //your code here
-    	return 0;
+    	return fields.length;
     }
 
     /**
@@ -38,7 +48,17 @@ public class TupleDesc {
      */
     public String getFieldName(int i) throws NoSuchElementException {
         //your code here
-    	return null;
+    	if(i < 0 || i > fields.length) {
+    		throw(new NoSuchElementException());
+    	}
+    	
+    	//is this needed?
+    	if(fields[i] == null) {
+    		return "";
+    	}
+    	
+    	
+    	return fields[i];
     }
 
     /**
@@ -50,6 +70,17 @@ public class TupleDesc {
      */
     public int nameToId(String name) throws NoSuchElementException {
         //your code here
+    	int index = -1;
+    	
+    	for(int i = 0; i<fields.length;i++) {
+    		if(getFieldName(i).equals(name)) {
+    			return i;
+    		}
+    	}
+    	
+    	if(index == -1) {
+    		throw(new NoSuchElementException());
+    	}
     	return 0;
     }
 
@@ -62,7 +93,11 @@ public class TupleDesc {
      */
     public Type getType(int i) throws NoSuchElementException {
         //your code here
-    	return null;
+    	if(i<0 || i>types.length) {
+    		throw(new NoSuchElementException());
+    	}
+    	
+    	return types[i];
     }
 
     /**
@@ -71,7 +106,18 @@ public class TupleDesc {
      */
     public int getSize() {
     	//your code here
-    	return 0;
+    	int sizeTuple = 0;
+    	
+    	for(int i = 0; i<fields.length;i++) {
+    		
+    		if(this.getType(i) == Type.INT) {
+    			sizeTuple += sizeInt;
+    		}
+    		if(this.getType(i) == Type.STRING) {
+    			sizeTuple += sizeString;
+    		}
+    	}
+    	return sizeTuple;
     }
 
     /**
@@ -84,7 +130,23 @@ public class TupleDesc {
      */
     public boolean equals(Object o) {
     	//your code here
-    	return false;
+    	TupleDesc givenTuple = (TupleDesc) o;
+    	
+    	//compare size first
+    	if(this.getSize() != givenTuple.getSize()) {
+    		return false;
+    	}
+	
+    	//compare elements between each object(if this is reached we know they have the same size)
+    	for(int i = 0; i<fields.length;i++) {
+    		
+    		if(this.getType(i) != givenTuple.getType(i)) {
+    			return false;
+    		}
+    	}
+    	
+    	//if elements are equal, size was already proven equal, so objects are equal
+    	return true;
     }
     
 
@@ -102,6 +164,13 @@ public class TupleDesc {
      */
     public String toString() {
         //your code here
-    	return "";
+    	String concatString = "";
+    	
+    	for(int i = 0; i<fields.length;i++) {
+    		concatString += this.getType(i).name() + "(" + this.getFieldName(i) + "),";
+    	}
+    	
+    	
+    	return concatString;
     }
 }

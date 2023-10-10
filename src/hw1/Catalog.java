@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -13,8 +14,32 @@ import java.util.*;
  * user program before it can be used -- eventually, this should be converted
  * to a catalog that reads a catalog table from disk.
  */
+/*
+ * Student 1 name: Ben Fletcher
+ * Date: 9/6/2023
+ */
 
 public class Catalog {
+	
+	//maps table id to the table object
+	private HashMap<Integer,Table> catalogStorageAr;
+	
+	//private class representing a singular table
+	private class Table{
+		
+		HeapFile heapFile;
+		String tableName;
+		String primaryKeyField;
+		int tableID;
+		
+		public Table(HeapFile hf, String tn, String pkf) {
+			heapFile = hf;
+			tableName = tn;
+			primaryKeyField = pkf;
+			tableID = hf.getId();
+		}
+		
+	}
 	
     /**
      * Constructor.
@@ -22,6 +47,7 @@ public class Catalog {
      */
     public Catalog() {
     	//your code here
+    	catalogStorageAr = new HashMap<Integer, Table>();
     }
 
     /**
@@ -34,6 +60,8 @@ public class Catalog {
      */
     public void addTable(HeapFile file, String name, String pkeyField) {
     	//your code here
+    	Table newTable = new Table(file, name, pkeyField);
+    	catalogStorageAr.put(newTable.tableID,newTable);
     }
 
     public void addTable(HeapFile file, String name) {
@@ -44,9 +72,23 @@ public class Catalog {
      * Return the id of the table with a specified name,
      * @throws NoSuchElementException if the table doesn't exist
      */
-    public int getTableId(String name) {
+    public int getTableId(String name) throws NoSuchElementException{
     	//your code here
-    	return 0;
+    	int tableID = 0;
+    	boolean nameExists = false;
+    	
+    	for(int i: catalogStorageAr.keySet()){
+    		if(catalogStorageAr.get(i).tableName.equals(name)) {
+    			nameExists = true;
+    			tableID = i;
+    		}
+    	}
+    	
+    	if(!nameExists) {
+    		throw(new NoSuchElementException());
+    	}
+    	
+    	return tableID;
     }
 
     /**
@@ -56,7 +98,7 @@ public class Catalog {
      */
     public TupleDesc getTupleDesc(int tableid) throws NoSuchElementException {
     	//your code here
-    	return null;
+    	return catalogStorageAr.get(tableid).heapFile.getTupleDesc();
     }
 
     /**
@@ -67,27 +109,28 @@ public class Catalog {
      */
     public HeapFile getDbFile(int tableid) throws NoSuchElementException {
     	//your code here
-    	return null;
+    	return catalogStorageAr.get(tableid).heapFile;
     }
 
     /** Delete all tables from the catalog */
     public void clear() {
     	//your code here
+    	catalogStorageAr = new HashMap<Integer,Table>();
     }
 
     public String getPrimaryKey(int tableid) {
     	//your code here
-    	return null;
+    	return catalogStorageAr.get(tableid).primaryKeyField;
     }
 
     public Iterator<Integer> tableIdIterator() {
     	//your code here
-    	return null;
+    	return catalogStorageAr.keySet().iterator();
     }
 
     public String getTableName(int id) {
     	//your code here
-    	return null;
+    	return catalogStorageAr.get(id).tableName;
     }
     
     /**
