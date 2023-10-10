@@ -43,11 +43,7 @@ public class Relation {
 			}
 				
 		}
-		
-
-		//why do we use same td if only one field is part of this td now, not 2?
-		
-		
+			
 		Relation newRelation = new Relation(selectArrayList,td);
 		
 		return newRelation;
