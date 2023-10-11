@@ -71,7 +71,7 @@ public class HeapPage {
 	 */
 	private int getHeaderSize() {        
 		//your code here
-		return numSlots;
+		return numSlots/8;
 	}
 
 	/**

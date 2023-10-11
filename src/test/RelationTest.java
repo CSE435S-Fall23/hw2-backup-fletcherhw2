@@ -46,6 +46,7 @@ public class RelationTest {
 		testtd = c.getTupleDesc(tableId);
 		testhf = c.getDbFile(tableId);
 		
+		
 		c = Database.getCatalog();
 		c.loadSchema("testfiles/A.txt");
 		
@@ -53,7 +54,7 @@ public class RelationTest {
 		atd = c.getTupleDesc(tableId);
 		ahf = c.getDbFile(tableId);
 	}
-	/*
+
 	@Test
 	public void testSelect() {
 		Relation ar = new Relation(ahf.getAllTuples(), atd);
@@ -83,7 +84,7 @@ public class RelationTest {
 		assert(tr.getTuples().size() == 5);
 		assert(tr.getDesc().getSize() == 141);
 	}
-	*/
+	
 	@Test
 	public void testRename() {
 		Relation ar = new Relation(ahf.getAllTuples(), atd);
@@ -102,7 +103,7 @@ public class RelationTest {
 		assertTrue(ar.getDesc().getSize() == 8);
 		
 	}
-	/*
+	
 	@Test
 	public void testAggregate() {
 		Relation ar = new Relation(ahf.getAllTuples(), atd);
@@ -123,5 +124,5 @@ public class RelationTest {
 		
 		assertTrue(ar.getTuples().size() == 4);
 	}
-*/
+	 
 }

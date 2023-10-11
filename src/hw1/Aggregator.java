@@ -40,6 +40,36 @@ public class Aggregator {
 	public void merge(Tuple t) {
 		//your code here
 		
+		if(this.memGroupBy) {
+			mergeGroupBy(t);
+		}
+		else {
+			mergeWithoutGroupBy(t);
+		}	
+	}
+	
+	
+	
+	//split the group by and non group by aggregate code into two seperate helper methods 
+	//for readability
+	private void mergeGroupBy(Tuple t) {
+		switch(memOperator) {
+		
+			case MAX:
+	
+			case MIN:
+	
+			case AVG:
+	
+			case COUNT:
+	
+			case SUM:
+			
+		
+		}
+	}
+	private void mergeWithoutGroupBy(Tuple t) {
+		
 		switch(memOperator) {
 		
 			case MAX:
@@ -63,7 +93,16 @@ public class Aggregator {
 			//should there be an avg for strings?
 			//any other way than to cast here?
 				
-			int tupleVal = Integer.parseInt(resultAggregateTuples.get(0).getField(0).toString());
+			//times the old average by the number of tuples to get the actual value
+			int tupleVal = Integer.parseInt(resultAggregateTuples.get(0).getField(0).toString()) * resultAggregateTuples.size();
+			//calculate new average  by adding new tuple's value and divide by the new num of tuples
+			int newAverage = tupleVal + Integer.parseInt(t.getField(0).toString()) / (resultAggregateTuples.size() + 1);
+			
+			Tuple newTupleAVG = new Tuple(memTupleDesc);
+			newTupleAVG.setField(0, new IntField(newAverage));
+			
+			resultAggregateTuples.set(0,newTupleAVG);
+			
 				
 				
 			case COUNT:
@@ -87,12 +126,10 @@ public class Aggregator {
 				newTupleSum.setField(0, new IntField(newSum));
 				
 				resultAggregateTuples.set(0,newTupleSum);
-			
+		
 		}
-		
-		
-		
 	}
+	
 	
 	/**
 	 * Returns the result of the aggregation
