@@ -35,7 +35,7 @@ public class Relation {
 		
 		ArrayList<Tuple> selectArrayList = new ArrayList<Tuple>();
 		
-		//all all tuples that match the select condition
+		//all tuples that match the select condition
 		for(Tuple t: tuples) {
 			
 			if(t.getField(field).compare(op, operand)== true) {
@@ -187,7 +187,21 @@ public class Relation {
 	 */
 	public Relation aggregate(AggregateOperator op, boolean groupBy) {
 		//your code here
-		return null;
+		
+		Aggregator agg = new Aggregator(op,groupBy,this.td);
+		
+		//merge each indv tuple in current relation
+		for(Tuple t:this.tuples) {
+			agg.merge(t);
+		}
+		
+		//get result tuple arraylist
+		ArrayList<Tuple> returnedAggAL = agg.getResults();
+		
+		//make new relation with same td
+		Relation aggRelation = new Relation(returnedAggAL, this.td);
+		
+		return aggRelation;
 	}
 	
 	public TupleDesc getDesc() {

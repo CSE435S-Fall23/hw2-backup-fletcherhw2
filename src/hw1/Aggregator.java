@@ -12,9 +12,24 @@ import java.util.Iterator;
  * Student: Ben Fletcher 498067
  */
 public class Aggregator {
+	
+	private AggregateOperator memOperator;
+	private boolean memGroupBy;
+	private TupleDesc memTupleDesc;
+	private ArrayList<Tuple> resultAggregateTuples;
 
+	
 	public Aggregator(AggregateOperator o, boolean groupBy, TupleDesc td) {
 		//your code here
+		
+		memOperator = o;
+		memGroupBy = groupBy;
+		memTupleDesc = td;
+		
+		Tuple initTuple = new Tuple(td);
+		
+		resultAggregateTuples = new ArrayList<Tuple>();
+		resultAggregateTuples.add(initTuple);
 
 	}
 
@@ -24,6 +39,59 @@ public class Aggregator {
 	 */
 	public void merge(Tuple t) {
 		//your code here
+		
+		switch(memOperator) {
+		
+			case MAX:
+			
+				//if the current max of all the tuples is less than the merged tuples value, then new tuple
+				//value is the max
+				if(resultAggregateTuples.get(0).getField(0).compare(RelationalOperator.LT, t.getField(0))) {
+					resultAggregateTuples.set(0, t);
+				}
+				
+			case MIN:
+				
+				//if the current min of all the tuples is greater than the merged tuples value, then new tuple
+				//value is the min
+				if(resultAggregateTuples.get(0).getField(0).compare(RelationalOperator.GT, t.getField(0))) {
+					resultAggregateTuples.set(0, t);
+				}
+				
+			case AVG:
+				
+			//should there be an avg for strings?
+			//any other way than to cast here?
+				
+			int tupleVal = Integer.parseInt(resultAggregateTuples.get(0).getField(0).toString());
+				
+				
+			case COUNT:
+				//casting also used here
+				
+				//every time tuple is merged just add one to pre-existing count
+				int newCount = Integer.parseInt(resultAggregateTuples.get(0).getField(0).toString()) + 1;
+				Tuple newTupleCount = new Tuple(memTupleDesc);
+				newTupleCount.setField(0, new IntField(newCount));
+				
+				resultAggregateTuples.set(0,newTupleCount);
+				
+				
+			case SUM:
+				
+				//every time tuple is merged just add curr tuples value to pre-existing sum
+				int oldSum = Integer.parseInt(resultAggregateTuples.get(0).getField(0).toString());
+				int newSum = oldSum + Integer.parseInt(t.getField(0).toString());
+				
+				Tuple newTupleSum = new Tuple(memTupleDesc);
+				newTupleSum.setField(0, new IntField(newSum));
+				
+				resultAggregateTuples.set(0,newTupleSum);
+			
+		}
+		
+		
+		
 	}
 	
 	/**
@@ -32,7 +100,7 @@ public class Aggregator {
 	 */
 	public ArrayList<Tuple> getResults() {
 		//your code here
-		return null;
+		return resultAggregateTuples;
 	}
 
 }
