@@ -136,8 +136,8 @@ public class Relation {
 			combinedNames[i] = td.getFieldName(i);
 		}
 		for(int i = 0;i<other.getDesc().numFields();i++) {
-			combinedTypes[i+td.numFields()-1] = other.getDesc().getType(i);
-			combinedNames[i+td.numFields()-1] = other.getDesc().getFieldName(i);
+			combinedTypes[i+td.numFields()] = other.getDesc().getType(i);
+			combinedNames[i+td.numFields()] = other.getDesc().getFieldName(i);
 		}
 		
 		TupleDesc joinDesc = new TupleDesc(combinedTypes,combinedNames);
