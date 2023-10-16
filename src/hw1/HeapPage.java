@@ -113,7 +113,13 @@ public class HeapPage {
 	 */
 	public void setSlotOccupied(int s, boolean value) {
 		//your code here
-		if(s>=0 && s<header.length) header[s] = 1;
+		
+		int bytePos = (int) Math.floor(s/8.0);
+		int bitPos = Math.floorMod(s, 8);
+		int bit = (header[bytePos]&(1<<bitPos));
+		
+		byte newByte = (byte) ((header[bytePos])|(1<<bit));
+		if(s>=0 && s<header.length) header[s] = newByte;
 	}
 	
 	/**
