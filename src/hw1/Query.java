@@ -118,6 +118,16 @@ public class Query {
 			
 		}
 		
+		
+		//select the rows we want
+		for(WhereExpressionVisitor whereV:whereVisList) {
+			
+		}
+		
+		
+		
+		//project the final columns that are after the select clause
+		
 		for(ColumnVisitor columnv: visList) {
 			
 			//handle select all
@@ -141,8 +151,8 @@ public class Query {
 		
 		
 		
-		Relation executedRelation = new Relation(null,null);
-		return executedRelation;
+		
+		return starterRelation;
 		
 	}
 }

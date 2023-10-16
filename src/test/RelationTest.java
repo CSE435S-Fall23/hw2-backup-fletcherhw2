@@ -77,6 +77,8 @@ public class RelationTest {
 	
 	@Test
 	public void testJoin() {
+	
+		
 		Relation tr = new Relation(testhf.getAllTuples(), testtd);
 		Relation ar = new Relation(ahf.getAllTuples(), atd);
 		tr = tr.join(ar, 0, 0);
