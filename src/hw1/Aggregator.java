@@ -237,7 +237,7 @@ public class Aggregator {
 				if(resultAggregateTuples.size()==0) {
 					
 					Tuple aggTup = new Tuple(memTupleDesc);
-					aggTup.setField(1, t.getField(1));
+					aggTup.setField(0, t.getField(0));
 					resultAggregateTuples.add(aggTup);
 				}
 				//first tuple has been handled
@@ -257,7 +257,7 @@ public class Aggregator {
 				if(resultAggregateTuples.size()==0) {
 					
 					Tuple aggTup = new Tuple(memTupleDesc);
-					aggTup.setField(1, t.getField(1));
+					aggTup.setField(0, t.getField(0));
 					resultAggregateTuples.add(aggTup);
 				}
 				//first tuple has been handled
@@ -278,7 +278,7 @@ public class Aggregator {
 				if(resultAggregateTuples.size()==0) {
 					
 					Tuple aggTup = new Tuple(memTupleDesc);
-					aggTup.setField(1, t.getField(1));
+					aggTup.setField(0, t.getField(0));
 					resultAggregateTuples.add(aggTup);
 				}
 				//first tuple has been handled
@@ -304,7 +304,7 @@ public class Aggregator {
 				if(resultAggregateTuples.size()==0) {
 					
 					Tuple aggTup = new Tuple(memTupleDesc);
-					aggTup.setField(1, t.getField(1));
+					aggTup.setField(0, t.getField(0));
 					resultAggregateTuples.add(aggTup);
 				}
 				//first tuple has been handled
@@ -325,7 +325,7 @@ public class Aggregator {
 				if(resultAggregateTuples.size()==0) {
 					
 					Tuple aggTup = new Tuple(memTupleDesc);
-					aggTup.setField(1, t.getField(1));
+					aggTup.setField(0, t.getField(0));
 					resultAggregateTuples.add(aggTup);
 				}
 				//first tuple has been handled
