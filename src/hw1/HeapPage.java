@@ -88,9 +88,6 @@ public class HeapPage {
 		int bitPos = Math.floorMod(s, 8);
 		int bit = (header[bytePos]&(1<<bitPos));
 		
-		byte filled = 0;
-		byte notfilled = 0;
-		
 		/*
 		boolean isSet(byte value, int bit){
 			   return (value&(1<<bit))!=0;
@@ -102,7 +99,7 @@ public class HeapPage {
 		}
 		*/
 		
-		if(bit == 1) {
+		if(bit !=0 ) {
 			return true;
 		}
 		
