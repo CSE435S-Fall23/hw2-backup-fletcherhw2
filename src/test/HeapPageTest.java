@@ -68,6 +68,7 @@ public class HeapPageTest {
 		try {
 			hp.addTuple(t);
 		} catch (Exception e) {
+			System.out.println(e.getMessage());
 			fail("error when adding valid tuple");
 			e.printStackTrace();
 		}

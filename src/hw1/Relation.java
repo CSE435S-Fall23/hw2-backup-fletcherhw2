@@ -155,20 +155,22 @@ public class Relation {
 					Tuple combinedNewTuple = new Tuple(joinDesc);
 					
 					//set all fields to be equal to partitioned fields
-					for(int x = 0; x<combinedNames.length;i++) {
+					for(int x = 0; x<combinedNames.length;x++) {
 						
 						//we know first half is this.relation and second half is other.relation
 						if(x< td.numFields()) {
-							combinedNewTuple.setField(x, tuples.get(i).getField(x));
+							Field newField = tuples.get(i).getField(x);
+							combinedNewTuple.setField(x, newField);
 						}
 						//other.relation
 						else {
-							combinedNewTuple.setField(x, other.getTuples().get(j).getField(x));
+							Field newField = other.getTuples().get(j).getField(x);
+							combinedNewTuple.setField(x, newField);
 						}
-						
-						//add filled tuples to new tuple array list containing joined tuples
-						combinedRelationTuples.add(combinedNewTuple);
+	
 					}
+					//add filled tuples to new tuple array list containing joined tuples
+					combinedRelationTuples.add(combinedNewTuple);
 				}
 			}
 			

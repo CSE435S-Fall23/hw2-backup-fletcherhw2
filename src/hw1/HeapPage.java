@@ -114,14 +114,28 @@ public class HeapPage {
 	public void setSlotOccupied(int s, boolean value) {
 		//your code here
 		
-		int bytePos = (int) Math.floor(s/8.0);
-		int bitPos = Math.floorMod(s, 8);
-		
-		int bit = (header[bytePos]&(1<<bitPos));
-		
-		byte newByte = (byte) (header[bytePos] | (1 << bitPos));
-		
-		if(s>=0 && s<header.length) header[s] = newByte;
+		//set bit to 1
+		if(value == true) {
+			//set bit to 0
+			int bytePos = (int) Math.floor(s/8.0);
+			int bitPos = Math.floorMod(s, 8);
+			
+			
+			byte newByte = (byte) (header[bytePos] | (1 << bitPos));
+			
+			header[s] = newByte;
+		}
+		//set bit to 0
+		else {
+			
+			int bytePos = (int) Math.floor(s/8.0);
+			int bitPos = Math.floorMod(s, 8);
+			
+			
+			byte newByte = (byte) (header[bytePos] & ~(1 << bitPos));
+			
+			header[s] = newByte;
+		}
 	}
 	
 	/**
@@ -140,17 +154,25 @@ public class HeapPage {
 		}
 		
 		boolean filledHeapPage = true;
-		
+		int counter = 0;
+		int i = 0;
+		int j = 0;
 		//check if heap page is filled
-		for(int i = 0; i<header.length;i++) {
+		//int i = 0; i<header.length;i++
+		while(i<header.length && justFilled == false ) {
 			
-			if(header[i] == 0 && justFilled == false) {
-				filledHeapPage = false;
-				justFilled = true;
-				tuples[i] = t;
-				setSlotOccupied(i, true);
+			while(j<8 && justFilled == false) {
+				if(!slotOccupied(counter) && justFilled == false) {
+					filledHeapPage = false;
+					justFilled = true;
+					tuples[counter] = t;
+					setSlotOccupied(counter, true);
+				}		
+				counter++;
+				j++;
 			}
-			
+
+			i++;
 		}
 		
 		if(filledHeapPage) {
@@ -174,14 +196,15 @@ public class HeapPage {
 		}
 		
 		//check if slot is already empty
-		if(header[t.getId()] == 0) {
+		if(slotOccupied(t.getId()) == false) {
 			throw(new Exception("slot already empty"));
 		}
 		
 		//slot not empty so del tuple
 		//and set bit to 0
-		header[t.getId()] = 0;
+		setSlotOccupied(t.getId(),false);
 		tuples[t.getId()] = null;
+		
 		
 		
 	}
@@ -342,13 +365,22 @@ public class HeapPage {
 	 * @return
 	 */
 	public boolean emptySlotExists() {
+		int counter = 0;
+		int i = 0;
+		int j = 0;
 		
-		for(int i = 0; i< header.length;i++) {
-			
-			if(!(this.slotOccupied(i))) {
-				return true;
+		while(i<header.length) {
+			//loop through each bit of the bytes in the header
+			while(j<8) {
+				
+				if(!(this.slotOccupied(counter))) {
+					return true;			
+				}
+				j++;
+				counter++;
 			}
 			
+			i++;
 		}
 		
 		return false;
