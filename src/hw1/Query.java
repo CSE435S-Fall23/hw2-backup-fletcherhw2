@@ -38,10 +38,46 @@ public class Query {
 		}
 		Select selectStatement = (Select) statement;
 		PlainSelect sb = (PlainSelect)selectStatement.getSelectBody();
+		//sb.getSelectItems();
+		
+		
+		
+		
+		//get the heap file that is listed in the FROM clause
+		String heapfileName = sb.getFromItem().toString();
+		int tableID = Database.getCatalog().getTableId(heapfileName);
+		HeapFile hf = Database.getCatalog().getDbFile(tableID);
+		
+		//get all tuples and the tuple description and make the starter relation
+		ArrayList<Tuple> allTuples = hf.getAllTuples();
+		TupleDesc initDesc = hf.getTupleDesc();
+		
+		Relation starterRelation = new Relation(allTuples,initDesc);
+		
+		
+		
+		ArrayList<ColumnVisitor> visList = new ArrayList<ColumnVisitor>();
+		List<SelectItem> listSelectColumns = sb.getSelectItems();
+		
+		for(SelectItem si:listSelectColumns) {
+			
+			ColumnVisitor cv = new ColumnVisitor();
+			si.accept(cv);
+			visList.add(cv);
+			System.out.println(cv.getColumn());
+		}
+		
+		
+		
+		
+		
 		
 		
 		//your code here
-		return null;
+		
+		
+		Relation executedRelation = new Relation(null,null);
+		return executedRelation;
 		
 	}
 }
