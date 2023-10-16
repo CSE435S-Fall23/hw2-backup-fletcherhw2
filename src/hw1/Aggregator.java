@@ -84,7 +84,9 @@ public class Aggregator {
 					//find right tuple for this group
 					for(Tuple tup: resultAggregateTuples) {
 						
-						if(tup.getField(0).compare(RelationalOperator.EQ, t.getField(0))== true) {
+						Field tupget = tup.getField(0);
+						Field tget = new StringField(t.getField(0).toString());
+						if(tupget.compare(RelationalOperator.EQ, tget)== true) {
 							
 							if(tup.getField(1).compare(RelationalOperator.LT, t.getField(1))==true) {
 								
@@ -118,7 +120,9 @@ public class Aggregator {
 					//find right tuple for this group
 					for(Tuple tup: resultAggregateTuples) {
 						
-						if(tup.getField(0).compare(RelationalOperator.EQ, t.getField(0))== true) {
+						Field tupget = tup.getField(0);
+						Field tget = new StringField(t.getField(0).toString());
+						if(tupget.compare(RelationalOperator.EQ, tget)== true) {
 							
 							if(tup.getField(1).compare(RelationalOperator.GT, t.getField(1))==true) {
 								
@@ -148,7 +152,9 @@ public class Aggregator {
 					//find right tuple for this group
 					for(Tuple tup: resultAggregateTuples) {
 						
-						if(tup.getField(0).compare(RelationalOperator.EQ, t.getField(0))== true) {
+						Field tupget = tup.getField(0);
+						Field tget = new StringField(t.getField(0).toString());
+						if(tupget.compare(RelationalOperator.EQ, tget)== true) {
 							
 							int oldAvg = Integer.parseInt(tup.getField(1).toString());
 							//recalculate average
@@ -180,7 +186,9 @@ public class Aggregator {
 					//find right tuple for this group
 					for(Tuple tup: resultAggregateTuples) {
 						
-						if(tup.getField(0).compare(RelationalOperator.EQ, t.getField(0))== true) {
+						Field tupget = tup.getField(0);
+						Field tget = new StringField(t.getField(0).toString());
+						if(tupget.compare(RelationalOperator.EQ, tget)== true) {
 							
 							int oldCount = Integer.parseInt(tup.getField(1).toString());
 							//recalculate average
