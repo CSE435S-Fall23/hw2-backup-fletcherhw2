@@ -212,7 +212,9 @@ public class Aggregator {
 					//find right tuple for this group
 					for(Tuple tup: resultAggregateTuples) {
 						
-						if(tup.getField(0).compare(RelationalOperator.EQ, t.getField(0))== true) {
+						Field tupget = tup.getField(0);
+						Field tget = new StringField(t.getField(0).toString());
+						if(tupget.compare(RelationalOperator.EQ, tget)== true) {
 							
 							int oldSum = Integer.parseInt(tup.getField(1).toString());
 							//recalculate average
@@ -325,7 +327,8 @@ public class Aggregator {
 				if(resultAggregateTuples.size()==0) {
 					
 					Tuple aggTup = new Tuple(memTupleDesc);
-					aggTup.setField(0, t.getField(0));
+					IntField newField = (IntField) t.getField(0);
+					aggTup.setField(0, newField);
 					resultAggregateTuples.add(aggTup);
 				}
 				//first tuple has been handled

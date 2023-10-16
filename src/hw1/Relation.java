@@ -101,10 +101,17 @@ public class Relation {
 		TupleDesc projectTupleDesc = new TupleDesc(projectTypes, projectNames);
 		
 		//make sure all tuples in current relation are converted to only include necessary fields
-		ArrayList<Tuple> projectTuples = tuples;
+		ArrayList<Tuple> projectTuples = new ArrayList<Tuple>();
 		
-		for(Tuple t: projectTuples) {
-			t.setDesc(projectTupleDesc);
+		for(Tuple t: tuples) {
+			
+			Tuple newTuple = new Tuple(projectTupleDesc);
+			
+			for(int i = 0; i<projectTupleDesc.numFields();i++) {
+				newTuple.setField(i, t.getField(t.getDesc().nameToId(projectTupleDesc.getFieldName(i))));
+			}
+			
+			projectTuples.add(newTuple);
 		}
 		
 		Relation newRelation = new Relation(projectTuples,projectTupleDesc);
