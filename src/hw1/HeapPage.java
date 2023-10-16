@@ -116,9 +116,11 @@ public class HeapPage {
 		
 		int bytePos = (int) Math.floor(s/8.0);
 		int bitPos = Math.floorMod(s, 8);
+		
 		int bit = (header[bytePos]&(1<<bitPos));
 		
-		byte newByte = (byte) ((header[bytePos])|(1<<bit));
+		byte newByte = (byte) (header[bytePos] | (1 << bitPos));
+		
 		if(s>=0 && s<header.length) header[s] = newByte;
 	}
 	
