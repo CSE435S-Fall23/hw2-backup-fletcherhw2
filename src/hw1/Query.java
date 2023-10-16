@@ -56,8 +56,10 @@ public class Query {
 		
 		
 		
+		
 		ArrayList<ColumnVisitor> visList = new ArrayList<ColumnVisitor>();
 		List<SelectItem> listSelectColumns = sb.getSelectItems();
+		ArrayList<String> projectedColumns = new ArrayList<String>();
 		
 		for(SelectItem si:listSelectColumns) {
 			
@@ -67,13 +69,27 @@ public class Query {
 			System.out.println(cv.getColumn());
 		}
 		
+		for(ColumnVisitor columnv: visList) {
+			
+			//handle select all
+			if(columnv.getColumn()=="*") {
+
+			}
+			//if column is aggregate
+			if(columnv.isAggregate()) {
+				AggregateOperator columnAGGREGATE = columnv.getOp();
+				starterRelation.aggregate(columnAGGREGATE, false);
+			}
+			//column is just a normal, non * column
+			else 
+			{
+				projectedColumns
+			}
+			
+		}
 		
 		
 		
-		
-		
-		
-		//your code here
 		
 		
 		Relation executedRelation = new Relation(null,null);

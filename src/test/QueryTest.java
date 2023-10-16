@@ -58,7 +58,7 @@ public class QueryTest {
 	
 	@Test
 	public void testProject() {
-		Query q = new Query("SELECT a2 FROM A");
+		Query q = new Query("SELECT SUM(a2) FROM A");
 		Relation r = q.execute();
 		
 		assert(r.getDesc().getSize() == 4);
