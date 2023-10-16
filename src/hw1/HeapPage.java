@@ -35,7 +35,7 @@ public class HeapPage {
 		DataInputStream dis = new DataInputStream(new ByteArrayInputStream(data));
 
 		// allocate and read the header slots of this page
-		header = new byte[getHeaderSize()];
+		this.header = new byte[getHeaderSize()];
 		for (int i=0; i<header.length; i++)
 			header[i] = dis.readByte();
 
@@ -71,7 +71,9 @@ public class HeapPage {
 	 */
 	private int getHeaderSize() {        
 		//your code here
-		return numSlots/8;
+		double test = Math.ceil(numSlots/8.0);
+		int test1 = (int)test;
+		return (int) Math.ceil(numSlots/8.0);
 	}
 
 	/**
@@ -80,15 +82,27 @@ public class HeapPage {
 	 * @return true if occupied
 	 */
 	public boolean slotOccupied(int s) {
+		
 		//your code here
-		byte filled = 1;
+		int bytePos = (int) Math.floor(s/8.0);
+		int bitPos = Math.floorMod(s, 8);
+		int bit = (header[bytePos]&(1<<bitPos));
+		
+		byte filled = 0;
 		byte notfilled = 0;
 		
-		if(s>= 0 && s<header.length && header[s] != notfilled && header[s]!= filled) {
+		/*
+		boolean isSet(byte value, int bit){
+			   return (value&(1<<bit))!=0;
+			} 
+		*/
+		/*
+		if(s<header.length && header[s] != notfilled && header[s]!= filled) {
 			header[s] = 0;
 		}
+		*/
 		
-		if( s >= 0 && s < header.length && header[s] == filled ) {
+		if(bit == 1) {
 			return true;
 		}
 		
