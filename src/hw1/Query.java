@@ -64,51 +64,53 @@ public class Query {
 	
 		
 		ArrayList<ColumnVisitor> visList = new ArrayList<ColumnVisitor>();
-		ArrayList<WhereExpressionVisitor> whereVisList = new ArrayList<WhereExpressionVisitor>();
 		
 		List<SelectItem> listSelectColumns = sb.getSelectItems();
 		List<Join> listJoins = sb.getJoins();
-		ArrayList<String> projectedColumns = new ArrayList<String>();
+		
 		
 	
 		//handle joins first, not efficient but makes it easier
-		for(Join j: listJoins) {
-			
-			Expression onE = j.getOnExpression();
-			
-			//from piazza student answer question @84
-			BinaryExpression be = (BinaryExpression) onE;
-			
-			Column le = (Column)be.getLeftExpression();
-			Column re = (Column)be.getRightExpression();
-			
-			String colL = le.getColumnName();
-			String colR = re.getColumnName();
-			
-			
-			
-			String leftTable = heapfileName;
-			String rightTable = j.getRightItem().toString();
-			
-			//get the heap file on the right side of the join
-			int tableIDRight = Database.getCatalog().getTableId(rightTable);
-			HeapFile hfRight = Database.getCatalog().getDbFile(tableIDRight);
-			
-			
+		if(listJoins != null) {
+			for(Join j: listJoins) {
+				
+				Expression onE = j.getOnExpression();
+				
+				//from piazza student answer question @84
+				BinaryExpression be = (BinaryExpression) onE;
+				
+				Column le = (Column)be.getLeftExpression();
+				Column re = (Column)be.getRightExpression();
+				
+				String colL = le.getColumnName();
+				String colR = re.getColumnName();
+				
+				
+				
+				String leftTable = heapfileName;
+				String rightTable = j.getRightItem().toString();
+				
+				//get the heap file on the right side of the join
+				int tableIDRight = Database.getCatalog().getTableId(rightTable);
+				HeapFile hfRight = Database.getCatalog().getDbFile(tableIDRight);
+				
+				
 
-					
-			//get all tuples and the tuple description and make the starter relation
-			//each operation will work on this starter relation
-			ArrayList<Tuple> allTuplesRight = hfRight.getAllTuples();
-			TupleDesc initDescRight = hfRight.getTupleDesc();
-			
-			int fieldL = initDesc.nameToId(colL);
-			int fieldR = hfRight.getTupleDesc().nameToId(colR);
-					
-			Relation starterRelationRight = new Relation(allTuplesRight,initDescRight);
-			
-			starterRelation = starterRelation.join(starterRelationRight, fieldL, fieldR);
+						
+				//get all tuples and the tuple description and make the starter relation
+				//each operation will work on this starter relation
+				ArrayList<Tuple> allTuplesRight = hfRight.getAllTuples();
+				TupleDesc initDescRight = hfRight.getTupleDesc();
+				
+				int fieldL = initDesc.nameToId(colL);
+				int fieldR = hfRight.getTupleDesc().nameToId(colR);
+						
+				Relation starterRelationRight = new Relation(allTuplesRight,initDescRight);
+				
+				starterRelation = starterRelation.join(starterRelationRight, fieldL, fieldR);
+			}			
 		}
+
 	
 		
 		//get where statements
@@ -186,7 +188,7 @@ public class Query {
 			//column is just a normal, non * column
 			else 
 			{
-				projectedFields.add(initDesc.nameToId(columnv.getColumn()));
+				projectedFields.add(starterRelation.getDesc().nameToId(columnv.getColumn()));
 			}
 			
 		}
