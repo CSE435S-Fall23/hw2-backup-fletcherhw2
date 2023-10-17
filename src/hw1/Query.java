@@ -216,8 +216,10 @@ public class Query {
 		//project all of the necessary fields gained from the visitors
 		projectedRelation = projectedRelation.project(projectedFields);
 		
-		//call rename relation
-		if(renamedNames!= null) {
+		
+		
+		//call rename relation on final projection
+		if(renamedNames.size()!=0) {
 			
 			//rename after everything important has been done
 			//AS clause
