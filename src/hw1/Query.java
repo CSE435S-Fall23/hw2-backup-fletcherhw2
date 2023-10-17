@@ -70,7 +70,7 @@ public class Query {
 		List<Join> listJoins = sb.getJoins();
 		ArrayList<String> projectedColumns = new ArrayList<String>();
 		
-	/*	
+	
 		//handle joins first, not efficient but makes it easier
 		for(Join j: listJoins) {
 			
@@ -82,9 +82,10 @@ public class Query {
 			Column le = (Column)be.getLeftExpression();
 			Column re = (Column)be.getRightExpression();
 			
+			String colL = le.getColumnName();
+			String colR = re.getColumnName();
 			
-			int fieldL = initDesc.nameToId(le.getColumnName());
-			int fieldR = initDesc.nameToId(re.getColumnName());
+			
 			
 			String leftTable = heapfileName;
 			String rightTable = j.getRightItem().toString();
@@ -92,17 +93,23 @@ public class Query {
 			//get the heap file on the right side of the join
 			int tableIDRight = Database.getCatalog().getTableId(rightTable);
 			HeapFile hfRight = Database.getCatalog().getDbFile(tableIDRight);
+			
+			
+
 					
 			//get all tuples and the tuple description and make the starter relation
 			//each operation will work on this starter relation
 			ArrayList<Tuple> allTuplesRight = hfRight.getAllTuples();
 			TupleDesc initDescRight = hfRight.getTupleDesc();
+			
+			int fieldL = initDesc.nameToId(colL);
+			int fieldR = hfRight.getTupleDesc().nameToId(colR);
 					
 			Relation starterRelationRight = new Relation(allTuplesRight,initDescRight);
 			
 			starterRelation = starterRelation.join(starterRelationRight, fieldL, fieldR);
 		}
-	*/
+	
 		
 		//get where statements
 		if(sb.getWhere()!= null) {
@@ -115,7 +122,7 @@ public class Query {
 			RelationalOperator opR = we.getOp();
 			
 			//call select so only the correct rows are in the relation
-			starterRelation.select(initDesc.nameToId(lwhere), opR, rwhere);
+			starterRelation = starterRelation.select(initDesc.nameToId(lwhere), opR, rwhere);
 		}
 
 		//get groupBy
@@ -153,13 +160,8 @@ public class Query {
 		//project the final columns that are after the select clause
 		
 		Relation projectedRelation = starterRelation;
-		/*
-		ArrayList<Tuple> Al = new ArrayList<Tuple>();
-		Type[] types = new Type[0];
-		String[] names = new String[0];
-		TupleDesc tdnew = new TupleDesc(types,names);
-		Relation finalRelation = new Relation(Al,tdnew);
-		*/
+		ArrayList<Integer> projectedFields = new ArrayList<Integer>();
+
 		for(ColumnVisitor columnv: visList) {
 			
 			//handle select all, return all columns
@@ -171,29 +173,20 @@ public class Query {
 				
 				if(groupByFlag) {
 					AggregateOperator columnAGGREGATE = columnv.getOp();
-					starterRelation.aggregate(columnAGGREGATE, true);					
+					projectedRelation = starterRelation.aggregate(columnAGGREGATE, true);					
 				}
 				else {
 					AggregateOperator columnAGGREGATE = columnv.getOp();
-					starterRelation.aggregate(columnAGGREGATE, false);
+					projectedRelation = starterRelation.aggregate(columnAGGREGATE, false);
 				}
 				
-				//finalRelation.joinProjectionsTogether(starterRelation);
+				return projectedRelation;
 
 			}
 			//column is just a normal, non * column
 			else 
 			{
-				/*
-				ArrayList<Integer> fieldsAL = new ArrayList<Integer>();
-				fieldsAL.add(hf.getTupleDesc().nameToId(columnv.getColumn()));
-				
-				projectedRelation = starterRelation.project(fieldsAL);
-				
-				
-				finalRelation.joinProjectionsTogether(projectedRelation);
-				
-				*/
+				projectedFields.add(initDesc.nameToId(columnv.getColumn()));
 			}
 			
 		}
@@ -204,14 +197,16 @@ public class Query {
 			renamedFields.add(hf.getTupleDesc().nameToId(name));
 		}
 		
-		starterRelation.rename(renamedFields, renamedNames);
+		if(renamedNames.size()!=0) {
+			projectedRelation = projectedRelation.rename(renamedFields, renamedNames);	
+		}
+	
+		//project all of the necessary fields gained from the visitors
+		projectedRelation = projectedRelation.project(projectedFields);
 		
 		
-		
-		
-		
-		
-		return starterRelation;
+		//starterRelation
+		return projectedRelation;
 		
 	}
 }

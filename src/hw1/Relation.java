@@ -38,7 +38,8 @@ public class Relation {
 		//all tuples that match the select condition
 		for(Tuple t: tuples) {
 			
-			if(t.getField(field).compare(op, operand)== true) {
+			Field retField = t.getField(field);
+			if(retField.compare(op, operand)== true) {
 				selectArrayList.add(t);
 			}
 				
