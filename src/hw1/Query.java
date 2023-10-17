@@ -150,11 +150,16 @@ public class Query {
 			visList.add(cv);
 			
 			//make sure column can be renamed later but doesnt lose its value
-			SelectExpressionItem sic = (SelectExpressionItem) si;
-			
-			if(sic.getAlias()!=null) {
-				renamedNames.add(sic.getAlias().getName());
+			//select all causes error here
+			if(cv.getColumn() != "*") {
+				
+				SelectExpressionItem sic = (SelectExpressionItem) si;
+				
+				if(sic.getAlias()!=null) {
+					renamedNames.add(sic.getAlias().getName());
+				}				
 			}
+
 			
 		}
 		
@@ -179,7 +184,14 @@ public class Query {
 				}
 				else {
 					AggregateOperator columnAGGREGATE = columnv.getOp();
-					projectedRelation = starterRelation.aggregate(columnAGGREGATE, false);
+					
+					//project only the singular column before it is aggregated
+					ArrayList<Integer> temp = new ArrayList<Integer>();
+					temp.add(initDesc.nameToId(columnv.getColumn()));
+					
+					Relation tempRelation = starterRelation.project(temp);
+					
+					projectedRelation = tempRelation.aggregate(columnAGGREGATE, false);
 				}
 				
 				return projectedRelation;
