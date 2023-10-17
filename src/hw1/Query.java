@@ -5,7 +5,9 @@ package hw1;
 
 import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 
 import net.sf.jsqlparser.JSQLParserException;
@@ -138,6 +140,9 @@ public class Query {
 		//will occur at end of code after other operations have finished
 		ArrayList<Integer> renamedFields = new ArrayList<Integer>();
 		ArrayList<String> renamedNames = new ArrayList<String>();
+		//will be in the form <oldname, newname>
+		Dictionary<String,String> renamedNamesDict = new Hashtable<String,String>();
+		
 		
 		//loop through all columns listed after the select
 		for(SelectItem si:listSelectColumns) {
@@ -154,8 +159,10 @@ public class Query {
 			if(cv.getColumn() != "*") {
 				
 				SelectExpressionItem sic = (SelectExpressionItem) si;
-				
+				//add oldname and new name to dictionary
 				if(sic.getAlias()!=null) {
+					
+					renamedNamesDict.put(cv.getColumn(),sic.getAlias().getName());
 					renamedNames.add(sic.getAlias().getName());
 				}				
 			}
@@ -206,17 +213,25 @@ public class Query {
 		}
 		
 		
-		//rename after everything important has been done
-		for(String name: renamedNames) {
-			renamedFields.add(hf.getTupleDesc().nameToId(name));
-		}
+		//project all of the necessary fields gained from the visitors
+		projectedRelation = projectedRelation.project(projectedFields);
 		
-		if(renamedNames.size()!=0) {
+		//call rename relation
+		if(renamedNames!= null) {
+			
+			//rename after everything important has been done
+			//AS clause
+			Enumeration<String> oldFields = renamedNamesDict.keys();
+			
+			//get the old field ids from the old names
+			while(oldFields.hasMoreElements()) {
+				renamedFields.add(projectedRelation.getDesc().nameToId(oldFields.nextElement()));
+			}
+			
 			projectedRelation = projectedRelation.rename(renamedFields, renamedNames);	
 		}
 	
-		//project all of the necessary fields gained from the visitors
-		projectedRelation = projectedRelation.project(projectedFields);
+
 		
 		
 		//starterRelation

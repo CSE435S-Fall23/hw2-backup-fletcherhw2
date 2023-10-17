@@ -62,6 +62,7 @@ public class Aggregator {
 	//for readability
 	
 	private void mergeGroupBy(Tuple t) {
+		
 		switch(memOperator) {
 		
 			case MAX:
@@ -97,7 +98,7 @@ public class Aggregator {
 				}
 				
 
-	
+				break;
 			case MIN:
 				
 				//check to see if this tuple's group has already been accounted for or not
@@ -131,7 +132,7 @@ public class Aggregator {
 						}
 					}
 				}
-	
+				break;
 			case AVG:
 				//check to see if this tuple's group has already been accounted for or not
 				if( !groupByNames.contains(t.getField(0).toString()) ) {
@@ -164,7 +165,7 @@ public class Aggregator {
 						}
 					}
 				}
-	
+				break;
 			case COUNT:
 				
 				//check to see if this tuple's group has already been accounted for or not
@@ -175,7 +176,7 @@ public class Aggregator {
 					//set the first field to the group name
 					//second field will be the grouped value
 					aggTupleGB.setField(0, new StringField(t.getField(0).toString()));
-					aggTupleGB.setField(1, new IntField(Integer.MIN_VALUE));
+					aggTupleGB.setField(1, new IntField(1));
 					resultAggregateTuples.add(aggTupleGB);
 				}
 				
@@ -198,7 +199,7 @@ public class Aggregator {
 						}
 					}
 				}
-	
+				break;
 			case SUM:
 				
 				//check to see if this tuple's group has already been accounted for or not
@@ -233,6 +234,7 @@ public class Aggregator {
 						}
 					}
 				}
+				break;
 	
 		
 		}
@@ -259,7 +261,7 @@ public class Aggregator {
 					}
 				}
 			
-
+				break;
 				
 			case MIN:
 				
@@ -278,7 +280,7 @@ public class Aggregator {
 						resultAggregateTuples.set(0, t);
 					}			
 				}
-
+				break;
 	
 		//should there be an avg for strings?
 		//any other way than to cast here?
@@ -304,7 +306,7 @@ public class Aggregator {
 					resultAggregateTuples.set(0,newTupleAVG);
 					
 				}
-
+				break;
 				
 
 				
@@ -314,11 +316,12 @@ public class Aggregator {
 				if(resultAggregateTuples.size()==0) {
 					
 					Tuple aggTup = new Tuple(memTupleDesc);
-					aggTup.setField(0, t.getField(0));
+					aggTup.setField(0, new IntField(1));
 					resultAggregateTuples.add(aggTup);
 				}
-				//first tuple has been handled
-				else {
+				else 
+				{
+					//first tuple has been handled
 					//every time tuple is merged just add one to pre-existing count
 					int newCount = Integer.parseInt(resultAggregateTuples.get(0).getField(0).toString()) + 1;
 					Tuple newTupleCount = new Tuple(memTupleDesc);
@@ -326,10 +329,7 @@ public class Aggregator {
 					
 					resultAggregateTuples.set(0,newTupleCount);					
 				}
-				
-
-				
-				
+				break;
 			case SUM:
 				//handling if current tuple is the first tuple being merged
 				if(resultAggregateTuples.size()==0) {
@@ -350,6 +350,7 @@ public class Aggregator {
 					
 					resultAggregateTuples.set(0,newTupleSum);
 				}
+				break;
 		
 		}
 	}

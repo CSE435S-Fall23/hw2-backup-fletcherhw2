@@ -18,6 +18,7 @@ import hw1.HeapFile;
 import hw1.IntField;
 import hw1.Query;
 import hw1.Relation;
+import hw1.StringField;
 import hw1.TupleDesc;
 
 
@@ -73,7 +74,7 @@ public class YourUnitTests{
 	//test extra aggregator because tests given to use only test one(SUM)
 	//this tests without groupby
 	@Test
-	public void extraAGGREGATETESTNOGB() {
+	public void extraAggregateTestNOGB() {
 
 		Relation ar = new Relation(ahf.getAllTuples(), atd);
 		ArrayList<Integer> c = new ArrayList<Integer>();
@@ -83,22 +84,38 @@ public class YourUnitTests{
 		
 		assertTrue(ar.getTuples().size() == 1);
 		IntField agg = (IntField)(ar.getTuples().get(0).getField(0));
-		assertTrue(agg.getValue() == 36);
+		assertTrue(agg.getValue() == 8);
 
 
 	}
 	
 	//test extra aggregator because tests given to use only test one(SUM)
 	//this tests with groupby
-	public void extraAGGREGATETESTYESGB() {
+	@Test
+	public void extraAggregateTestYESGB() {
 		
 		
 		Relation ar = new Relation(ahf.getAllTuples(), atd);
 		ar = ar.aggregate(AggregateOperator.COUNT, true);
 		
-		assertTrue(ar.getTuples().size() == 1);
-		IntField agg = (IntField)(ar.getTuples().get(0).getField(0));
-		assertTrue(agg.getValue() == 36);
+		
+		assertTrue(ar.getTuples().size() == 4);
+			
+		//check counts for each group
+		IntField group1 = (IntField) ar.getTuples().get(0).getField(1);
+		IntField group2 = (IntField) ar.getTuples().get(1).getField(1);
+		IntField group3 = (IntField) ar.getTuples().get(2).getField(1);
+		IntField group4 = (IntField) ar.getTuples().get(3).getField(1);
+		
+		assertTrue(group1.getValue() == 5);
+		assertTrue(group2.getValue() == 1);
+		assertTrue(group3.getValue() == 1);
+		assertTrue(group4.getValue() == 1);
+		
+		
+		
+		
+
 
 
 	}
