@@ -189,62 +189,6 @@ public class Relation {
 		return joinedRelation;
 	}
 	
-	/**
-	 * for use in piecing back together projects in queries
-	 * @param other
-	 * @return relation that is two relations joined together on no condition
-	 */
-	public Relation joinProjectionsTogether(Relation other) {
-		
-		Type[] combinedTypes = new Type[td.numFields()+ other.getDesc().numFields()];
-		String[] combinedNames = new String[td.numFields()+ other.getDesc().numFields()];
-		
-		//first half of combined will be this.relation's types and names
-		//second half will be filled with other.relation's types and names
-		for(int i = 0;i<td.numFields();i++) {
-			combinedTypes[i] = td.getType(i);
-			combinedNames[i] = td.getFieldName(i);
-		}
-		for(int i = 0;i<other.getDesc().numFields();i++) {
-			combinedTypes[i+td.numFields()] = other.getDesc().getType(i);
-			combinedNames[i+td.numFields()] = other.getDesc().getFieldName(i);
-		}
-		
-		TupleDesc joinDesc = new TupleDesc(combinedTypes,combinedNames);
-		
-		ArrayList<Tuple> combinedRelationTuples = new ArrayList<Tuple>(tuples.size()+ other.getTuples().size());
-		
-		for(int i = 0; i<tuples.size();i++) {
-			
-			for(int j = 0; j<other.getTuples().size();j++) {
-				
-					Tuple combinedNewTuple = new Tuple(joinDesc);
-					
-					//set all fields to be equal to partitioned fields
-					for(int x = 0; x<combinedNames.length;i++) {
-						
-						//we know first half is this.relation and second half is other.relation
-						if(x< td.numFields()) {
-							combinedNewTuple.setField(x, tuples.get(i).getField(x));
-						}
-						//other.relation
-						else {
-							combinedNewTuple.setField(x, other.getTuples().get(j).getField(x));
-						}
-						
-						//add filled tuples to new tuple array list containing joined tuples
-						combinedRelationTuples.add(combinedNewTuple);
-					}
-				}
-			}
-			
-		
-		Relation joinedRelation = new Relation(combinedRelationTuples,joinDesc);
-		
-		return joinedRelation;
-
-		
-	}
 	
 	/**
 	 * Performs an aggregation operation on a relation. See the lab write up for details.
