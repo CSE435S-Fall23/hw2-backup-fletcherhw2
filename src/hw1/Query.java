@@ -108,7 +108,7 @@ public class Query {
 				int fieldR = hfRight.getTupleDesc().nameToId(colR);
 						
 				Relation starterRelationRight = new Relation(allTuplesRight,initDescRight);
-				
+				//rewrite the starter relation so now all other relations act on this joined relation
 				starterRelation = starterRelation.join(starterRelationRight, fieldL, fieldR);
 			}			
 		}
@@ -154,7 +154,7 @@ public class Query {
 	
 			visList.add(cv);
 			
-			//make sure column can be renamed later but doesnt lose its value
+			//make sure column can be renamed later but doesn't lose its value
 			//select all causes error here
 			if(cv.getColumn() != "*") {
 				
@@ -182,7 +182,7 @@ public class Query {
 			if(columnv.getColumn() == "*") {
 				return starterRelation;
 			}
-			//if column is aggregate
+			//if column is aggregate, check the groupby flag
 			if(columnv.isAggregate()) {
 				
 				if(groupByFlag) {
@@ -234,9 +234,6 @@ public class Query {
 		}
 	
 
-		
-		
-		//starterRelation
 		return projectedRelation;
 		
 	}
