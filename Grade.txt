@@ -1,0 +1,5 @@
+Join returns wrong result. Half the result table is empty.(-5)
+Aggregate AVG returns wrong results. You forgot a parentheses when calculating newAverage. Also use double/float when doing division, otherwise Java automatically round everything to int. (-1)
+Your GroupBy assumes and cast the column to be grouped on as Sting type, but aggregate should not change the data type of the field when grouping by a int field.(-.5)
+
+Grade: 93.5/100
